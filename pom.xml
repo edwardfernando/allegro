@@ -137,7 +137,12 @@
 			<version>2.4</version>
 		</dependency>
 
-
+		<!-- Type Safe Config -->
+		<dependency>
+			<groupId>com.typesafe</groupId>
+			<artifactId>config</artifactId>
+			<version>1.2.1</version>
+		</dependency>
 	</dependencies>
 
 	<build>
