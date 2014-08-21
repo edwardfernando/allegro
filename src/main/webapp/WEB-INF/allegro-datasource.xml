@@ -11,12 +11,9 @@
 	<!-- Default bean name is 'mongo' -->
 	<!-- <mongo:mongo host="localhost" port="27017" /> -->
 	<!-- Default bean name is 'mongo' -->
-	<!-- <mongo:mongo>
-		<mongo:options connections-per-host="100"
-			threads-allowed-to-block-for-connection-multiplier="5" max-wait-time="120000000"
-			connect-timeout="10000000" socket-keep-alive="true" socket-timeout="15000000"
-			auto-connect-retry="true" />
-	</mongo:mongo> -->
+	<!-- <mongo:mongo> <mongo:options connections-per-host="100" threads-allowed-to-block-for-connection-multiplier="5" 
+		max-wait-time="120000000" connect-timeout="10000000" socket-keep-alive="true" 
+		socket-timeout="15000000" auto-connect-retry="true" /> </mongo:mongo> -->
 
 	<beans:bean id="mongo"
 		class="org.springframework.data.mongodb.core.MongoFactoryBean">
@@ -28,7 +25,7 @@
 		class="org.springframework.data.mongodb.core.MongoTemplate">
 		<beans:constructor-arg name="mongo" ref="mongo" />
 		<beans:constructor-arg name="databaseName"
-			value="test" />
+			value="allegro" />
 	</beans:bean>
 
 </beans:beans>
