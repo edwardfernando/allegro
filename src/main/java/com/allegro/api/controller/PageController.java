@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.allegro.api.dao.PageDAO;
 import com.allegro.api.model.Page;
@@ -24,21 +23,14 @@ public class PageController extends com.allegro.api.controller.Controller {
 	@Autowired
 	private PageDAO dao;
 
-	@RequestMapping("/pages")
-	public @ResponseBody
-	List<Page> all() {
-		return null;
+	@RequestMapping(value = "/pages", method = RequestMethod.GET)
+	public ResponseEntity<List<Page>> getAll() {
+		return new ResponseEntity<List<Page>>(dao.getAll(), HttpStatus.OK);
 	}
 
 	@RequestMapping(value = "/page/{id}", method = RequestMethod.GET)
 	public ResponseEntity<Page> get(@PathVariable("id") String id) {
-
-		Page page = new Page();
-		page.setTitle("titleeee");
-		page.setThreadId("AAAAAA");
-		page.setUrl("http://kuaskus.com");
-
-		return new ResponseEntity<Page>(page, HttpStatus.OK);
+		return new ResponseEntity<Page>(dao.get(id), HttpStatus.OK);
 	}
 
 	@RequestMapping(value = "/page", method = RequestMethod.POST)
@@ -50,24 +42,19 @@ public class PageController extends com.allegro.api.controller.Controller {
 		}
 
 		dao.save(page);
-
-		logger.debug("Page : {}", page);
-
-		return new ResponseEntity<Page>(page, HttpStatus.OK);
+		return new ResponseEntity<Page>(HttpStatus.OK);
 	}
 
 	@RequestMapping(value = "/page", method = RequestMethod.PUT)
-	public @ResponseBody
-	Page update(@RequestBody Page page) {
+	public ResponseEntity<Page> update(@RequestBody Page page) {
 		dao.update(page);
-		return null;
+		return new ResponseEntity<Page>(HttpStatus.OK);
 	}
 
 	@RequestMapping(value = "/page", method = RequestMethod.DELETE)
-	public @ResponseBody
-	Page destroy(@RequestBody Page page) {
+	public ResponseEntity<Page> delete(@RequestBody Page page) {
 		dao.delete(page);
-		return null;
+		return new ResponseEntity<Page>(HttpStatus.OK);
 	}
 
 }

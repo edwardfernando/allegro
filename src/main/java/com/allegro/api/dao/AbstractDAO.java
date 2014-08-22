@@ -1,9 +1,9 @@
 package com.allegro.api.dao;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
 
 import com.allegro.api.model.Model;
 
@@ -14,52 +14,28 @@ public abstract class AbstractDAO<T extends Model> {
 
 	public abstract Class<T> getDomain();
 
-	public boolean tableExists () {
+	public boolean tableExists() {
 		return template.collectionExists(getDomain());
 	}
 
-	public T save (T object) {
+	public void save(T object) {
+		template.insert(object);
+	}
 
-		if (!tableExists()) {
-			template.createCollection(getDomain());
-		}
-
+	public void update(T object) {
 		template.save(object);
-
-		return object;
 	}
 
-	public T update (T object) {
-		if (!tableExists()) {
-			template.createCollection(getDomain());
-		}
-		System.out.println(">>> OBJECT : {}"+object);
-		System.out.println(">>> OBJECT ID : {}"+object.getId());
-
-		Query searchQuery = new Query(Criteria.where("id").is(object.getId()));
-		//template.findAndModify(searchQuery, Update.fromDBObject(object), object);
-		//template.updateFirst(query, update, entityClass)
-		return object;
-	}
-
-	public T delete (T object) {
-		if (!tableExists()) {
-			template.createCollection(getDomain());
-		}
-
-		Query searchQuery = new Query(Criteria.where("id").is(object.getId()));
-
+	public void delete(T object) {
 		template.remove(object);
-		template.remove(searchQuery, object.getClass());
-		return object;
 	}
 
-
-	public void get (String id) {
-		if (tableExists()) {
-
-		}
+	public List<T> getAll() {
+		return template.findAll(getDomain());
 	}
 
+	public T get(String id) {
+		return template.findById(id, getDomain());
+	}
 
 }
