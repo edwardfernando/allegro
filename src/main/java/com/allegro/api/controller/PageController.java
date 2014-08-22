@@ -5,6 +5,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -14,11 +15,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.allegro.api.dao.PageDAO;
 import com.allegro.api.model.Page;
-import com.typesafe.config.ConfigFactory;
 
 @Controller
 public class PageController extends com.allegro.api.controller.Controller {
+
+	@Autowired
+	private PageDAO dao;
 
 	@RequestMapping("/pages")
 	public @ResponseBody
@@ -44,8 +48,10 @@ public class PageController extends com.allegro.api.controller.Controller {
 		if (StringUtils.equals(action, "new_thread")) {
 
 		}
-		
-		logger.debug("Coba typeSafe : {}", ConfigFactory.load().getString("simple-lib.foo"));
+
+		dao.save(page);
+
+		logger.debug("Page : {}", page);
 
 		return new ResponseEntity<Page>(page, HttpStatus.OK);
 	}
@@ -53,12 +59,14 @@ public class PageController extends com.allegro.api.controller.Controller {
 	@RequestMapping(value = "/page", method = RequestMethod.PUT)
 	public @ResponseBody
 	Page update(@RequestBody Page page) {
+		dao.update(page);
 		return null;
 	}
 
 	@RequestMapping(value = "/page", method = RequestMethod.DELETE)
 	public @ResponseBody
-	Page destroy(@PathVariable("id") String id) {
+	Page destroy(@RequestBody Page page) {
+		dao.delete(page);
 		return null;
 	}
 
