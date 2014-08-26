@@ -3,8 +3,8 @@ package com.allegro.api.model;
 import org.joda.time.DateTime;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import com.allegro.api.util.JodaDateTimeSerializer;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.databind.ser.std.DateSerializer;
 
 @Document
 public class Page extends Model {
@@ -47,7 +47,7 @@ public class Page extends Model {
 		this.threadId = threadId;
 	}
 
-	@JsonSerialize(using = DateSerializer.class)
+	@JsonSerialize(using = JodaDateTimeSerializer.class)
 	public DateTime getThreadCreateAt() {
 		return threadCreateAt;
 	}
