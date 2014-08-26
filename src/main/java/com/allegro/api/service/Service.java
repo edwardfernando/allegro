@@ -18,24 +18,24 @@ public abstract class Service<T extends Model> {
 
 	public ResponseEntity<T> save(T object) {
 		dao().save(object);
-		return new ResponseEntity<>(HttpStatus.OK);
+		return new ResponseEntity<T>(HttpStatus.OK);
 	}
 
 	public ResponseEntity<T> update(T object) {
 		dao().update(object);
-		return new ResponseEntity<>(HttpStatus.OK);
+		return new ResponseEntity<T>(HttpStatus.OK);
 	}
 
 	public ResponseEntity<T> delete(T object) {
 		dao().delete(object);
-		return new ResponseEntity<>(HttpStatus.OK);
+		return new ResponseEntity<T>(HttpStatus.OK);
 	}
 
 	public ResponseEntity<List<T>> getAll() {
-		return new ResponseEntity<>(dao().getAll(), HttpStatus.OK);
+		return new ResponseEntity<List<T>>(dao().getAll(), HttpStatus.OK);
 	}
 
 	public ResponseEntity<T> get(String id) {
-		return new ResponseEntity<>(dao().get(id), HttpStatus.OK);
+		return new ResponseEntity<T>(dao().get(id), HttpStatus.OK);
 	}
 }
