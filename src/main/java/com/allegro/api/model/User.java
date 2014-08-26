@@ -33,11 +33,11 @@ public class User extends Model {
 		this.verified = verified;
 	}
 
+	@JsonSerialize(using = JodaDateTimeSerializer.class)
 	public DateTime getVerifiedDate() {
 		return verifiedDate;
 	}
 
-	@JsonSerialize(using = JodaDateTimeSerializer.class)
 	public void setVerifiedDate(DateTime verifiedDate) {
 		this.verifiedDate = verifiedDate;
 	}
