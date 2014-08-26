@@ -9,6 +9,8 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
 import com.allegro.api.dao.AbstractDAO;
@@ -32,7 +34,15 @@ public class PageService extends Service<Page> {
 	    .forPattern("yyyy-MM-dd'T'HH:mm:ssZ");
 
 	@Override
-	public void save(Page object) {
+	public ResponseEntity<Page> save(Page object) {
+
+		/**
+		 * Make sure no duplicated thread stored to DB
+		 */
+		if (isThreadExist(object.getThreadId())) {
+			return new ResponseEntity<>(HttpStatus.BAD_GATEWAY);
+		}
+
 		Config config = ConfigFactory.load();
 
 		try {
@@ -55,7 +65,11 @@ public class PageService extends Service<Page> {
 			logger.error("Exception Caught", e);
 		}
 
-		super.save(object);
+		return super.save(object);
 	}
 
+	private boolean isThreadExist(String threadID) {
+		Page page = dao.execUnique("threadId", threadID);
+		return page != null;
+	}
 }
