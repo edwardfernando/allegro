@@ -1,7 +1,6 @@
 package com.allegro.api.model;
 
-import java.util.Date;
-
+import org.joda.time.DateTime;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -14,7 +13,7 @@ public class Page extends Model {
 	private String title;
 	private String content;
 	private String threadId;
-	private Date threadCreateAt;
+	private DateTime threadCreateAt;
 
 	public String getUrl() {
 		return url;
@@ -49,11 +48,11 @@ public class Page extends Model {
 	}
 
 	@JsonSerialize(using = DateSerializer.class)
-	public Date getThreadCreateAt() {
+	public DateTime getThreadCreateAt() {
 		return threadCreateAt;
 	}
 
-	public void setThreadCreateAt(Date threadCreateAt) {
+	public void setThreadCreateAt(DateTime threadCreateAt) {
 		this.threadCreateAt = threadCreateAt;
 	}
 
