@@ -27,13 +27,6 @@ public class UserController extends com.allegro.api.controller.Controller {
 
 	@RequestMapping(value = "/users", method = RequestMethod.GET)
 	public ResponseEntity<List<User>> getAll() {
-		//		User user = new User();
-		//		user.setKaskusId("0980");
-		//		user.setToken("lkjljl");
-		//		user.setVerified(false);
-		//		user.setVerifiedDate(DateTime.now());
-		//
-		//		userDAO.save(user);
 		return userService.getAll();
 	}
 
