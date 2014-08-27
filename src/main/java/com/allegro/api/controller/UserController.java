@@ -1,8 +1,10 @@
 package com.allegro.api.controller;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -54,5 +56,16 @@ public class UserController extends com.allegro.api.controller.Controller {
 	@RequestMapping(value = "/user", method = RequestMethod.DELETE)
 	public ResponseEntity<User> delete(@RequestBody User user) {
 		return userService.delete(user);
+	}
+
+	@RequestMapping(value = "/user/verify", method = RequestMethod.POST)
+	public ResponseEntity<User> testVerify(@RequestBody User user) {
+		try {
+			userService.verifyUser(user);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return new ResponseEntity<User>(HttpStatus.OK);
 	}
 }
