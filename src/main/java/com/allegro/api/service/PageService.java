@@ -31,7 +31,7 @@ public class PageService extends Service<Page> {
 	}
 
 	private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormat
-			.forPattern("yyyy-MM-dd'T'HH:mm:ssZ");
+	    .forPattern("yyyy-MM-dd'T'HH:mm:ssZ");
 
 	@Override
 	public ResponseEntity<Page> save(Page object) {
@@ -40,16 +40,17 @@ public class PageService extends Service<Page> {
 		 * Make sure no duplicated thread stored to DB
 		 */
 		if (isThreadExist(object.getThreadId())) {
-			return new ResponseEntity<Page>(HttpStatus.BAD_GATEWAY);
+			logger.debug("threadExist");
+			return new ResponseEntity<Page>(HttpStatus.FORBIDDEN);
 		}
 
 		Config config = ConfigFactory.load();
 
 		try {
 			String threadURL = StringUtils.replace(
-				config.getString("kaskus_thread_url"),
-				"[thread_id]",
-				object.getThreadId());
+			    config.getString("kaskus_thread_url"),
+			    "[thread_id]",
+			    object.getThreadId());
 
 			Document doc = Jsoup.connect(threadURL).get();
 			Element firstSection = doc.select("section.hfeed ").first();
@@ -59,13 +60,14 @@ public class PageService extends Service<Page> {
 			object.setThreadId(object.getThreadId());
 			object.setContent(firstSection.select("div.entry").first().html());
 			object.setThreadCreateAt(DATE_FORMATTER.parseDateTime(firstSection.select(
-					"time.entry-date").attr("datetime")));
+			    "time.entry-date").attr("datetime")));
 
+			return super.save(object);
 		} catch (IOException e) {
 			logger.error("Exception Caught", e);
+			return new ResponseEntity<Page>(HttpStatus.SERVICE_UNAVAILABLE);
 		}
 
-		return super.save(object);
 	}
 
 	private boolean isThreadExist(String threadID) {
