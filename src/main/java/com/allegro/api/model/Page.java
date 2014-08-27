@@ -1,6 +1,7 @@
 package com.allegro.api.model;
 
 import org.joda.time.DateTime;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.allegro.api.util.JodaDateTimeSerializer;
@@ -14,6 +15,9 @@ public class Page extends Model {
 	private String content;
 	private String threadId;
 	private DateTime threadCreateAt;
+
+	@DBRef
+	private User user;
 
 	public String getUrl() {
 		return url;
@@ -54,6 +58,14 @@ public class Page extends Model {
 
 	public void setThreadCreateAt(DateTime threadCreateAt) {
 		this.threadCreateAt = threadCreateAt;
+	}
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
 	}
 
 }
