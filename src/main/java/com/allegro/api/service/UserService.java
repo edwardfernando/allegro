@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
@@ -29,7 +30,6 @@ public class UserService extends Service<User> {
 	@Autowired
 	private MongoTemplate template;
 
-
 	@Override
 	protected AbstractDAO<User> dao() {
 		return userDAO;
@@ -44,28 +44,41 @@ public class UserService extends Service<User> {
 		return super.save(object);
 	}
 
-	public void verifyUser (User user) throws IOException {
-		Document profileDoc = Jsoup.connect(PROFILE_URL+user.getKaskusId()).get();
-		Elements bioElements = profileDoc.select("div#main >  div#kk-container > div#main > div.row > div.col.grid-12 > div#details-header > div.row > div.col.grid-5 > div.group-desc > div.description");
-		String bioContent = bioElements.text().replace("Bio", "").trim();
+	public ResponseEntity<User> verifyUser(User user) {
 
-		boolean isUserFound = template.exists(new Query(Criteria.where("kaskusId").is(user.getKaskusId())), User.class);
-		User userFound = template.findOne(new Query(Criteria.where("kaskusId").is(user.getKaskusId())), User.class);
+		try {
+			Document profileDoc = Jsoup.connect(PROFILE_URL + user.getKaskusId()).get();
+			Elements bioElements = profileDoc
+			    .select("div#main >  div#kk-container > div#main > div.row > div.col.grid-12 > div#details-header > div.row > div.col.grid-5 > div.group-desc > div.description");
+			String bioContent = bioElements.text().replace("Bio", "").trim();
 
-		if (isUserFound) {
-			String token = userFound.getToken();
-			if (StringUtils.equals(token, bioContent)) {
-				logger.debug("Kaskus ID {} is verified!",user.getKaskusId());
-				userFound.setVerified(true);
-				userFound.setVerifiedDate(DateTime.now());
-				super.update(userFound);
+			boolean isUserFound = template.exists(
+			    new Query(Criteria.where("kaskusId").is(user.getKaskusId())),
+			    User.class);
+			User userFound = template.findOne(
+			    new Query(Criteria.where("kaskusId").is(user.getKaskusId())),
+			    User.class);
+
+			if (isUserFound) {
+				String token = userFound.getToken();
+				if (StringUtils.equals(token, bioContent)) {
+					logger.debug("Kaskus ID {} is verified!", user.getKaskusId());
+					userFound.setVerified(true);
+					userFound.setVerifiedDate(DateTime.now());
+					super.update(userFound);
+				} else {
+					logger.debug(
+					    "Token doesn't match! Kaskus ID {} is NOT verified",
+					    user.getKaskusId());
+				}
 			} else {
-				logger.debug("Token doesn't match! Kaskus ID {} is NOT verified",user.getKaskusId());
+				logger.debug("Kaskus ID {} is NOT found!", user.getKaskusId());
 			}
-		} else {
-			logger.debug("Kaskus ID {} is NOT found!", user.getKaskusId());
-		}
 
+			return new ResponseEntity<User>(HttpStatus.OK);
+		} catch (IOException e) {
+			return new ResponseEntity<User>(HttpStatus.BAD_REQUEST);
+		}
 
 	}
 }
