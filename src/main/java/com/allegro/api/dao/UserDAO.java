@@ -12,4 +12,9 @@ public class UserDAO extends AbstractDAO<User>{
 		return User.class;
 	}
 
+	public User findByKaskusId(User user) {
+		User userFound = this.execUnique("kaskusId", user.getKaskusId());
+		return userFound;
+	}
+
 }
