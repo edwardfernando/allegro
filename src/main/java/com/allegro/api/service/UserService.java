@@ -9,9 +9,6 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -26,9 +23,6 @@ public class UserService extends Service<User> {
 
 	@Autowired
 	private UserDAO userDAO;
-
-	@Autowired
-	private MongoTemplate template;
 
 	@Override
 	protected AbstractDAO<User> dao() {
@@ -49,17 +43,12 @@ public class UserService extends Service<User> {
 		try {
 			Document profileDoc = Jsoup.connect(PROFILE_URL + user.getKaskusId()).get();
 			Elements bioElements = profileDoc
-			    .select("div#main >  div#kk-container > div#main > div.row > div.col.grid-12 > div#details-header > div.row > div.col.grid-5 > div.group-desc > div.description");
+					.select("div#main >  div#kk-container > div#main > div.row > div.col.grid-12 > div#details-header > div.row > div.col.grid-5 > div.group-desc > div.description");
 			String bioContent = bioElements.text().replace("Bio", "").trim();
 
-			boolean isUserFound = template.exists(
-			    new Query(Criteria.where("kaskusId").is(user.getKaskusId())),
-			    User.class);
-			User userFound = template.findOne(
-			    new Query(Criteria.where("kaskusId").is(user.getKaskusId())),
-			    User.class);
+			User userFound = userDAO.findByKaskusId(user);
 
-			if (isUserFound) {
+			if (userFound != null) {
 				String token = userFound.getToken();
 				if (StringUtils.equals(token, bioContent)) {
 					logger.debug("Kaskus ID {} is verified!", user.getKaskusId());
@@ -67,9 +56,7 @@ public class UserService extends Service<User> {
 					userFound.setVerifiedDate(DateTime.now());
 					super.update(userFound);
 				} else {
-					logger.debug(
-					    "Token doesn't match! Kaskus ID {} is NOT verified",
-					    user.getKaskusId());
+					logger.debug("Token doesn't match! Kaskus ID {} is NOT verified",user.getKaskusId());
 				}
 			} else {
 				logger.debug("Kaskus ID {} is NOT found!", user.getKaskusId());
