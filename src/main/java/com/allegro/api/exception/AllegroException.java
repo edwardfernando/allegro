@@ -5,7 +5,7 @@ import org.springframework.validation.Errors;
 @SuppressWarnings("serial")
 public class AllegroException extends RuntimeException {
 	private Errors errors;
-	private ErrorCode errorCode = ErrorCode.ERR10000;
+	private ErrorCode errorCode = ErrorCode.SYSTEM_ERROR;
 
 	public AllegroException(String message, Errors errors) {
 		super(message);

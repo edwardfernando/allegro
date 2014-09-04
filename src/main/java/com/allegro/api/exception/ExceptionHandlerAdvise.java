@@ -25,12 +25,14 @@ public class ExceptionHandlerAdvise extends ResponseEntityExceptionHandler {
 	@ExceptionHandler({ AllegroException.class, Throwable.class })
 	protected ResponseEntity<Object> handleInvalidRequest(RuntimeException exception,
 	        WebRequest request) {
-
 		AllegroException allegroException = (AllegroException) exception;
 
 		List<FieldErrorResource> fieldErrorResources = new ArrayList<>();
 
-		ErrorResource error = new ErrorResource(allegroException.getErrorCode().toString(), allegroException.getMessage());
+		ErrorResource error = new ErrorResource(
+		                                        allegroException.getErrorCode().value(),
+		                                        allegroException.getMessage());
+		error.setReasonPhrase(allegroException.getErrorCode().getReasonPhrase());
 
 		if (allegroException.getErrors() != null) {
 			List<FieldError> fieldErrors = allegroException.getErrors().getFieldErrors();

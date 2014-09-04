@@ -6,23 +6,24 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ErrorResource {
-	private String code;
+	private int code;
+	private String reasonPhrase;
 	private String message;
 	private List<FieldErrorResource> fieldErrors;
 
 	public ErrorResource() {
 	}
 
-	public ErrorResource(String code, String message) {
+	public ErrorResource(int code, String message) {
 		this.code = code;
 		this.message = message;
 	}
 
-	public String getCode() {
+	public int getCode() {
 		return code;
 	}
 
-	public void setCode(String code) {
+	public void setCode(int code) {
 		this.code = code;
 	}
 
@@ -41,4 +42,13 @@ public class ErrorResource {
 	public void setFieldErrors(List<FieldErrorResource> fieldErrors) {
 		this.fieldErrors = fieldErrors;
 	}
+
+	public String getReasonPhrase() {
+		return reasonPhrase;
+	}
+
+	public void setReasonPhrase(String reasonPhrase) {
+		this.reasonPhrase = reasonPhrase;
+	}
+
 }
