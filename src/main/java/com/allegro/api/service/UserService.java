@@ -50,6 +50,7 @@ public class UserService extends Service<User> {
 		return super.save(object);
 	}
 
+	@LogProcess(className = User.class)
 	public ResponseEntity<User> verifyUser(User user) {
 		try {
 			Document profileDoc = Jsoup.connect(PROFILE_URL + user.getKaskusId()).get();
