@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 import com.allegro.api.annotation.LogProcess;
 import com.allegro.api.dao.AbstractDAO;
 import com.allegro.api.dao.UserDAO;
+import com.allegro.api.enumclass.ActionType;
 import com.allegro.api.exception.AllegroException;
 import com.allegro.api.exception.ErrorCode;
 import com.allegro.api.model.User;
@@ -33,7 +34,7 @@ public class UserService extends Service<User> {
 	}
 
 	@Override
-	@LogProcess(className = User.class)
+	@LogProcess(className = User.class, actionType = ActionType.SAVE)
 	public ResponseEntity<User> save(User object) {
 
 		if (null != userDAO.findByKaskusId(object)) {
@@ -50,7 +51,7 @@ public class UserService extends Service<User> {
 		return super.save(object);
 	}
 
-	@LogProcess(className = User.class)
+	@LogProcess(className = User.class, actionType = ActionType.UPDATE, detailProcess = "Verify User")
 	public ResponseEntity<User> verifyUser(User user) {
 		try {
 			Document profileDoc = Jsoup.connect(PROFILE_URL + user.getKaskusId()).get();
