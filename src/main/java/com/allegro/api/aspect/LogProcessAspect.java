@@ -14,9 +14,11 @@ import com.allegro.api.model.Model;
 public class LogProcessAspect {
 	protected final Logger logger = LoggerFactory.getLogger(getClass());
 
-	//@Before("execution(* com.allegro.api.service.UserService.save(..))")
 	@Before("@annotation(logProcess) && args(object,..)")
 	public void testLog(LogProcess logProcess, Model object) {
 		logger.info(object.toString());
+		logger.debug("Action Type : {}",logProcess.actionType());
+		logger.debug("Message : {}",logProcess.detailProcess());
+
 	}
 }
