@@ -1,5 +1,6 @@
 package com.allegro.api.model;
 
+import org.hibernate.validator.constraints.NotBlank;
 import org.joda.time.DateTime;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -8,6 +9,8 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 @Document
 public class User extends Model {
+	
+	@NotBlank
 	private String kaskusId;
 	private String token;
 	private boolean verified;

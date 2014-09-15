@@ -1,5 +1,6 @@
 package com.allegro.api.model;
 
+import org.hibernate.validator.constraints.NotBlank;
 import org.joda.time.DateTime;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -13,6 +14,8 @@ public class Page extends Model {
 	private String url;
 	private String title;
 	private String content;
+
+	@NotBlank
 	private String threadId;
 	private DateTime threadCreateAt;
 
