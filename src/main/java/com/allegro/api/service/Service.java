@@ -7,8 +7,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import com.allegro.api.annotation.LogProcess;
 import com.allegro.api.dao.AbstractDAO;
+import com.allegro.api.enumclass.ActionType;
 import com.allegro.api.model.Model;
+import com.allegro.api.model.User;
 
 public abstract class Service<T extends Model> {
 
@@ -16,6 +19,7 @@ public abstract class Service<T extends Model> {
 
 	protected abstract AbstractDAO<T> dao();
 
+	@LogProcess(className = User.class, actionType = ActionType.SAVE)
 	public ResponseEntity<T> save(T object) {
 		dao().save(object);
 		return new ResponseEntity<T>(HttpStatus.OK);
