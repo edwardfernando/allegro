@@ -2,6 +2,8 @@ package com.allegro.api.controller;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -30,7 +32,7 @@ public class PageController extends com.allegro.api.controller.Controller {
 	}
 
 	@RequestMapping(value = "/page", method = RequestMethod.POST)
-	public ResponseEntity<Page> create(@RequestBody Page page) {
+	public ResponseEntity<Page> create(@RequestBody @Valid Page page) {
 		return service.save(page);
 	}
 
