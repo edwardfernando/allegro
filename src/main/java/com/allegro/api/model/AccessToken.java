@@ -7,7 +7,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class AccessToken extends Model {
 
 	private String token;
-	private boolean isActive;
+	private boolean isActive = false;
 	private DateTime createdDate = DateTime.now();
 	private DateTime validUntil;
 
