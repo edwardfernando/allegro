@@ -10,6 +10,7 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import com.allegro.api.dao.AccessTokenDAO;
 import com.allegro.api.exception.AllegroException;
+import com.allegro.api.exception.ErrorCode;
 import com.allegro.api.model.AccessToken;
 
 public class AccessTokenInterceptor extends HandlerInterceptorAdapter {
@@ -22,32 +23,33 @@ public class AccessTokenInterceptor extends HandlerInterceptorAdapter {
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response,
 	        Object handler) throws Exception {
 
-		logger.debug("AccessTokenInterceptor Executed : {}", request);
-
 		String tokenString = request.getHeader("access_token");
 		AccessToken tokenObject = dao.execUnique("token", tokenString);
 
-		boolean returnValue = true;
 		if (tokenString == null) {
-			returnValue = false;
-			throw new AllegroException("No access_token found in your HTTP header request");
+			throw new AllegroException(
+			                           "No access_token found in your HTTP header request",
+			                           ErrorCode.AUTHENTICATION_ERROR);
 		}
 
 		if (tokenObject == null) {
-			returnValue = false;
-			throw new AllegroException("Your access_token is not valid");
+			throw new AllegroException(
+			                           "Your access_token is not valid",
+			                           ErrorCode.AUTHENTICATION_ERROR);
 		}
 
 		if (!tokenObject.isActive()) {
-			returnValue = false;
-			throw new AllegroException("Your access_token is not activated yet.");
+			throw new AllegroException(
+			                           "Your access_token is not activated yet",
+			                           ErrorCode.AUTHENTICATION_ERROR);
 		}
 
 		if (tokenObject.isExpired()) {
-			returnValue = false;
-			throw new AllegroException("Your access token is expired");
+			throw new AllegroException(
+			                           "Your access token is expired",
+			                           ErrorCode.AUTHENTICATION_ERROR);
 		}
 
-		return returnValue;
+		return true;
 	}
 }
