@@ -13,8 +13,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
+import com.allegro.api.annotation.LogProcess;
 import com.allegro.api.dao.AbstractDAO;
 import com.allegro.api.dao.UserDAO;
+import com.allegro.api.enumclass.ActionType;
 import com.allegro.api.exception.AllegroException;
 import com.allegro.api.exception.ErrorCode;
 import com.allegro.api.model.User;
@@ -32,13 +34,14 @@ public class UserService extends Service<User> {
 	}
 
 	@Override
+	@LogProcess(className = User.class, actionType = ActionType.SAVE)
 	public ResponseEntity<User> save(User object) {
 
 		if (null != userDAO.findByKaskusId(object)) {
 			throw new AllegroException(StringUtils.join(
-			    "Kaskus ID ",
-			    object.getKaskusId(),
-			    " already exit"), ErrorCode.RESOURCE_EXIST);
+				"Kaskus ID ",
+				object.getKaskusId(),
+					" already exit"), ErrorCode.RESOURCE_EXIST);
 		}
 
 		String token = UUID.randomUUID().toString();
@@ -48,11 +51,12 @@ public class UserService extends Service<User> {
 		return super.save(object);
 	}
 
+	@LogProcess(className = User.class, actionType = ActionType.UPDATE, detailProcess = "Verify User")
 	public ResponseEntity<User> verifyUser(User user) {
 		try {
 			Document profileDoc = Jsoup.connect(PROFILE_URL + user.getKaskusId()).get();
 			Elements bioElements = profileDoc
-			    .select("div#main >  div#kk-container > div#main > div.row > div.col.grid-12 > div#details-header > div.row > div.col.grid-5 > div.group-desc > div.description");
+					.select("div#main >  div#kk-container > div#main > div.row > div.col.grid-12 > div#details-header > div.row > div.col.grid-5 > div.group-desc > div.description");
 			String bioContent = bioElements.text().replace("Bio", "").trim();
 
 			User userFound = userDAO.findByKaskusId(user);
@@ -66,8 +70,8 @@ public class UserService extends Service<User> {
 					super.update(userFound);
 				} else {
 					logger.debug(
-					    "Token doesn't match! Kaskus ID {} is NOT verified",
-					    user.getKaskusId());
+						"Token doesn't match! Kaskus ID {} is NOT verified",
+						user.getKaskusId());
 				}
 			} else {
 				logger.debug("Kaskus ID {} is NOT found!", user.getKaskusId());
